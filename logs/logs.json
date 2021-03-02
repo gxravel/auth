@@ -1,0 +1,15 @@
+{"level":"error","msg":"Error 1054: Unknown column 'password' in 'field list'","time":"2021-02-19T20:54:24+04:00"}
+{"level":"error","msg":"Error 1054: Unknown column 'password' in 'field list'","time":"2021-02-19T23:32:03+04:00"}
+{"level":"error","msg":"Error 1054: Unknown column 'password' in 'field list'","time":"2021-02-19T23:44:55+04:00"}
+{"level":"error","msg":"Error 1054: Unknown column 'password' in 'field list'","time":"2021-02-19T23:46:49+04:00"}
+{"level":"error","msg":"Error 1054: Unknown column 'password' in 'field list'","time":"2021-02-20T00:07:31+04:00"}
+{"level":"error","msg":"Error 1054: Unknown column 'password' in 'field list'","time":"2021-02-20T00:08:41+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'asd@gmail.com' for key 'user.email'","time":"2021-02-20T00:14:03+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'nickname' for key 'user.nickname'","time":"2021-02-20T00:15:07+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'asd@gmail.com' for key 'user.email'","time":"2021-02-20T00:26:16+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'asd@gmail.com' for key 'user.email'","time":"2021-02-20T00:27:13+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'asd@gmail.com' for key 'user.email'","time":"2021-02-20T00:42:43+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'nickname' for key 'user.nickname'","time":"2021-02-20T00:42:50+04:00"}
+{"level":"debug","msg":"invalid character '}' looking for beginning of object key string","time":"2021-02-20T00:44:42+04:00"}
+{"level":"debug","msg":"invalid character '-' in numeric literal","time":"2021-02-20T00:46:04+04:00"}
+{"level":"debug","msg":"Invalid nickname: min length: 3, max length: 16, only latin and digits","time":"2021-02-20T00:52:21+04:00"}
