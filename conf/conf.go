@@ -20,8 +20,8 @@ type Configuration struct {
 }
 
 type JWTConfiguration struct {
-	JWTAccess  string `env:"JWT_ACCESS"`
-	JWTRefresh string `env:"JWT_REFRESH"`
+	JWTAccess  string `json:"JWT_ACCESS"`
+	JWTRefresh string `json:"JWT_REFRESH"`
 }
 
 func getPath() (filePath string) {
