@@ -12,10 +12,11 @@ import (
 
 // Configuration contains the environment variables
 type Configuration struct {
-	Domain           string `env:"DOMAIN"`
-	Port             int    `env:"PORT"`
+	Domain           string `json:"DOMAIN"`
+	Port             int    `json:"PORT"`
 	ConnectionString string `env:"DEV_MYSQL"`
-	RedisDSN         string `env:"REDIS_DSN"`
+	RedisDSN         string `json:"REDIS_DSN"`
+	AllowedOrigins   string `json:"ALLOWED_ORIGINS"`
 }
 
 type JWTConfiguration struct {

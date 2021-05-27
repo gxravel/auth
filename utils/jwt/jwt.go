@@ -24,11 +24,10 @@ const (
 type Claims struct {
 	Nickname string `json:"nickname,omitempty"`
 	Role     int8   `json:"role,omitempty"`
-	Scope    string `json:"scope"`
 	jwt.StandardClaims
 }
 
-// Details defines structure of a JWT token
+// Details defines the structure of a JWT token
 type Details struct {
 	String  string
 	Expiry  int64
@@ -36,28 +35,32 @@ type Details struct {
 	Subject string
 }
 
+// Manager includes the methods allowed to deal with the token
 type Manager interface {
+	save(token *Details) (err error)
+
 	Init(client *redis.Client, ctx context.Context, config *conf.JWTConfiguration)
 	Parse(tokenString string, isRefresh bool) (claims *Claims, err error)
-	save(token *Details) (err error)
 	CheckIfExists(tokenUUID string) (err error)
 	Delete(tokenUUID string) (err error)
 	Set(w http.ResponseWriter, user *db.User) (data map[string]interface{}, err error)
 }
 
+// Environment contains the fields which interact with the token
 type Environment struct {
 	client *redis.Client
 	ctx    context.Context
 	config *conf.JWTConfiguration
 }
 
+// Init initializes the JWT Environment
 func (env *Environment) Init(client *redis.Client, ctx context.Context, config *conf.JWTConfiguration) {
 	env.client = client
 	env.ctx = ctx
 	env.config = config
 }
 
-// create creates the HS512 jwt token with claims
+// create creates the HS512 JWT token with claims
 func create(user *db.User, expiry time.Duration, key string) (token *Details, err error) {
 	now := time.Now()
 	token = &Details{}
@@ -91,23 +94,14 @@ func (env *Environment) Parse(tokenString string, isRefresh bool) (claims *Claim
 		key = []byte(env.config.JWTAccess)
 	}
 	jwtToken, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.Errorf("Unexpected signing method: %v", t.Header["alg"])
+		}
 		return key, nil
 	})
-	if !jwtToken.Valid {
-		var ok bool
-		if claims, ok = jwtToken.Claims.(*Claims); !ok {
-			return nil, errors.New("Invalid token claims")
-		}
-	} else if ve, ok := err.(*jwt.ValidationError); ok {
-		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-			err = errors.New("That's not a token")
-		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-			err = errors.New("Time expired")
-		} else {
-			err = errors.New("Couldn't handle this token: " + err.Error())
-		}
-	} else {
-		err = errors.New("Token not provided")
+	var ok bool
+	if claims, ok = jwtToken.Claims.(*Claims); !ok || !jwtToken.Valid {
+		return nil, errors.New("Couldn't handle this token: " + err.Error())
 	}
 	return
 }
@@ -149,7 +143,7 @@ func (env *Environment) Set(w http.ResponseWriter, user *db.User) (data map[stri
 	if err != nil {
 		return
 	}
-	refreshToken, err := create(user, refreshTokenExpiry, env.config.JWTAccess)
+	refreshToken, err := create(user, refreshTokenExpiry, env.config.JWTRefresh)
 	if err != nil {
 		return
 	}

@@ -4,12 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gxravel/auth/api"
 	"github.com/gxravel/auth/conf"
 	"github.com/gxravel/auth/utils"
+)
+
+var (
+	allowedMethods = []string{"POST", "OPTIONS"}
+	allowedHeaders = []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"}
 )
 
 func getCORSOptions(headers, origins, methods []string) (options []handlers.CORSOption) {
@@ -23,8 +29,6 @@ func getCORSOptions(headers, origins, methods []string) (options []handlers.CORS
 
 func main() {
 	config := conf.Get()
-	fmt.Println(config.ConnectionString)
-	fmt.Println(config.RedisDSN)
 	env, err := api.GetDefaultEnvironment(config.ConnectionString, config.RedisDSN)
 	if err != nil {
 		log.Fatal(err)
@@ -38,9 +42,10 @@ func main() {
 	s.HandleFunc("/refresh_token", api.MakeHandler(env.Refresh)).Methods(http.MethodPost)
 	s.HandleFunc("/logout", api.MakeHandler(env.Logout)).Methods(http.MethodPost)
 
-	corsOptions := getCORSOptions(utils.AllowedHeaders, utils.AllowedOrigins, utils.AllowedMethods)
+	allowedOrigins := strings.Split(config.AllowedOrigins, ", ")
+	corsOptions := getCORSOptions(allowedHeaders, allowedOrigins, allowedMethods)
 
 	address := fmt.Sprint(":", config.Port)
 	handler := handlers.CORS(corsOptions...)(r)
-	log.Fatal(http.ListenAndServe(address, handler))
+	env.Logger.Fatal(http.ListenAndServe(address, handler))
 }

@@ -1,0 +1,8 @@
+{
+  "DOMAIN": "localhost",
+  "PORT": 8080,
+  "JWT_ACCESS": "",
+  "JWT_REFRESH": "",
+  "REDIS_DSN": "localhost:6379",
+  "ALLOWED_ORIGINS": "http://localhost:3000"
+}

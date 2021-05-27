@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
@@ -14,7 +13,6 @@ import (
 
 	"github.com/gxravel/auth/conf"
 	"github.com/gxravel/auth/db"
-	"github.com/gxravel/auth/utils"
 	"github.com/gxravel/auth/utils/jwt"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -48,16 +46,9 @@ type stackTracer interface {
 	StackTrace() errors.StackTrace
 }
 
-func configureHeader(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", strings.Join(utils.AllowedOrigins, ", "))
-	w.Header().Set("Access-Control-Allow-Methods", strings.Join(utils.AllowedMethods, ", "))
-	w.Header().Set("Access-Control-Allow-Headers", strings.Join(utils.AllowedHeaders, ", "))
-}
-
 // MakeHandler creates http.HandlerFunc out of the customHandler that manages the request
 func MakeHandler(customHandler func(http.ResponseWriter, *http.Request) (int, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		configureHeader(w)
 		if r.Method == "OPTIONS" {
 			return
 		}
@@ -87,7 +78,6 @@ func GetDefaultEnvironment(connectionString, redisDSN string) (env *Environment,
 	if err != nil {
 		return
 	}
-	defer logFile.Close()
 	logger.SetOutput(logFile)
 	// logger.SetReportCaller(true)
 
