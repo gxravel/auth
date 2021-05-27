@@ -22,6 +22,8 @@
 /conf/*.json
 !/conf/*template.json
 
+/logs/*
+
 ### Go Patch ###
 /vendor/
 /Godeps/
