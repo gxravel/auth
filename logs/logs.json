@@ -13,3 +13,148 @@
 {"level":"debug","msg":"invalid character '}' looking for beginning of object key string","time":"2021-02-20T00:44:42+04:00"}
 {"level":"debug","msg":"invalid character '-' in numeric literal","time":"2021-02-20T00:46:04+04:00"}
 {"level":"debug","msg":"Invalid nickname: min length: 3, max length: 16, only latin and digits","time":"2021-02-20T00:52:21+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'asd@gmail.com' for key 'user.email'","time":"2021-03-02T17:32:01+04:00"}
+{"level":"debug","msg":"Invalid email","time":"2021-03-02T17:33:28+04:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'nickname' for key 'user.nickname'","time":"2021-03-02T17:33:48+04:00"}
+{"level":"debug","msg":"Invalid email","time":"2021-03-02T17:33:57+04:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4, no spaces","time":"2021-03-02T17:34:10+04:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-03-02T17:41:23+04:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-03-02T17:42:28+04:00"}
+{"level":"error","msg":"Error 1146: Table 'auth.user' doesn't exist","time":"2021-03-31T05:20:06+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T14:50:42+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:14:58+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:28:03+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:30:25+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:33:38+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:44:46+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:47:02+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:51:53+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:53:19+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:53:44+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:55:00+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:55:15+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:55:35+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:57:23+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:58:37+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:59:19+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T15:59:25+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:00:14+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:00:25+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:02:39+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:02:51+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:03:11+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:03:17+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:05:45+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:06:12+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:08:52+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:09:18+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:10:39+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:11:34+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T16:11:58+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T21:17:15+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-07T21:17:29+03:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'fsfj@asfa.ru' for key 'user.email'","time":"2021-04-24T11:49:33+03:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'fsfj@asfa.ru' for key 'user.email'","time":"2021-04-24T11:50:01+03:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'fsfj@asfa.ru' for key 'user.email'","time":"2021-04-24T11:50:01+03:00"}
+{"level":"info","msg":"Error 1062: Duplicate entry 'fsfj@asfa.ru' for key 'user.email'","time":"2021-04-24T11:52:44+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:21:12+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:22:17+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:30:07+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:30:40+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:30:41+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:31:41+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:34:02+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:34:08+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:35:22+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:35:28+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:35:44+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:36:28+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:36:36+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:36:46+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:37:14+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:37:54+03:00"}
+{"level":"debug","msg":"Invalid password: minimum length: 4","time":"2021-04-24T12:38:10+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:39:22+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:43:42+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:46:33+03:00"}
+{"level":"debug","msg":"Invalid email","time":"2021-04-24T12:47:20+03:00"}
+{"level":"debug","msg":"Invalid email","time":"2021-04-24T12:47:31+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:47:48+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:48:56+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T12:49:03+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T14:17:12+03:00"}
+{"level":"debug","msg":"sql: no rows in result set","time":"2021-04-24T14:17:18+03:00"}
+{"level":"debug","msg":"crypto/bcrypt: hashedPassword is not the hash of the given password","time":"2021-04-24T15:00:33+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:31:38+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:32:16+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:36:34+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:36:52+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:38:42+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:41:00+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:41:19+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:56:26+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T15:59:01+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T16:02:37+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T16:05:17+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T16:22:54+03:00"}
+{"level":"debug","msg":"[]","time":"2021-04-24T16:26:03+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T16:26:03+03:00"}
+{"level":"debug","msg":"[]","time":"2021-04-24T16:28:53+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T16:28:53+03:00"}
+{"level":"debug","msg":"[refresh_token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6IiIsImV4cCI6MTYxOTg3NDI2M30.6rESMivyO7H-jrq1PV4MnV-ABylCxwFVzHeIxEzI5cQh9VsS8gCkVpqC1Osz6_gX9bNMcYfrAnIvGFKkS-SXPw]","time":"2021-04-24T16:29:36+03:00"}
+{"level":"debug","msg":"[refresh_token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6IiIsImV4cCI6MTYxOTg3NDI2M30.6rESMivyO7H-jrq1PV4MnV-ABylCxwFVzHeIxEzI5cQh9VsS8gCkVpqC1Osz6_gX9bNMcYfrAnIvGFKkS-SXPw]","time":"2021-04-24T16:30:42+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-24T16:32:42+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T16:56:15+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T16:59:26+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:02:48+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:03:04+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:06:48+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:11:10+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:11:56+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:28:06+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-24T17:35:49+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:03:54+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:04:43+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:06:32+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:15:18+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:18:45+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:20:11+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:21:07+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:22:12+03:00"}
+{"level":"debug","msg":"http: named cookie not present","time":"2021-04-25T22:23:45+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:09:03+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:10:33+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:14:02+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:25:51+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:26:51+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:28:00+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:43:02+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T00:45:21+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:01:50+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:02:39+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:03:20+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:03:26+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:06:51+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:08:13+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:08:20+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:10:24+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:14:53+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:15:43+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:16:23+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T01:20:32+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:01:10+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:01:47+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:01:54+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:01:54+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:02:17+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:03:06+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:03:16+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:04:26+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:04:35+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:05:07+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:05:11+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T13:05:15+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T16:53:10+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T17:05:09+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T17:05:52+03:00"}
+{"level":"debug","msg":"redis: nil","time":"2021-04-26T17:11:43+03:00"}

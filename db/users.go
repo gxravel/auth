@@ -1,15 +1,6 @@
-package database
+package db
 
-import (
-	"database/sql"
-	"time"
-)
-
-const (
-	connMaxLifeTime = time.Minute * 5
-	maxOpenConns    = 30
-	maxIdleConns    = maxOpenConns
-)
+import "database/sql"
 
 // User is a database model of users.
 type User struct {
@@ -34,22 +25,7 @@ type UserModel struct {
 	DB *sql.DB
 }
 
-// Init opens a database and configures it with default settings.
-func Init(driver string, connectionString string) (db *sql.DB, err error) {
-	db, err = sql.Open(driver, connectionString)
-	if err != nil {
-		return
-	}
-
-	db.SetConnMaxLifetime(connMaxLifeTime)
-	db.SetMaxOpenConns(maxOpenConns)
-	db.SetMaxIdleConns(maxIdleConns)
-
-	err = db.Ping()
-	return
-}
-
-// All returns all users.
+// All returns all users. TODO
 func (m UserModel) All() (users []User, err error) { return }
 
 // New creates new user and returns it's id.
