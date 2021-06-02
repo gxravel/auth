@@ -35,23 +35,23 @@ func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
 	if fullCheck {
 		reg = regexp.MustCompile(`^(?i)[0-9a-z]{3,16}$`)
 		if !reg.MatchString(user.Nickname) {
-			err = errors.New("Invalid nickname: min length: 3, max length: 16, only latin and digits")
+			err = errors.New("invalid nickname: min length - 3, max length - 16, only latin and digits")
 			return
 		}
 		reg = regexp.MustCompile(`^(?i)[a-zа-яё \'\-\.\,]*$`)
 		if !reg.MatchString(user.Name) {
-			err = errors.New("Invalid name")
+			err = errors.New("invalid name")
 			return
 		}
 	}
 	reg = regexp.MustCompile(`^.{4,255}$`)
 	if !reg.MatchString(user.Password) {
-		err = errors.New("Invalid password: minimum length: 4")
+		err = errors.New("invalid password: min length - 4")
 		return
 	}
 	reg = regexp.MustCompile(`^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$`)
 	if !reg.MatchString(user.Email) {
-		err = errors.New("Invalid email")
+		err = errors.New("invalid email")
 		return
 	}
 	user.Email = strings.ToLower(user.Email)
@@ -86,7 +86,7 @@ func (e *environment) signup(w http.ResponseWriter, r *http.Request) (code int, 
 		duplicate := regexDuplicate.FindStringSubmatch(err.Error())
 		if len(duplicate) != 0 {
 			e.log.Info(err)
-			code, err = http.StatusConflict, errors.New(fmt.Sprintf("The %s is already in use", duplicate[1]))
+			code, err = http.StatusConflict, errors.New(fmt.Sprintf("the %s is already in use", duplicate[1]))
 		} else {
 			e.log.Error(err)
 			code, err = http.StatusInternalServerError, errors.WithStack(err)
@@ -124,7 +124,7 @@ func (e *environment) login(w http.ResponseWriter, r *http.Request) (code int, e
 	if err != nil {
 		if err == sql.ErrNoRows {
 			e.log.Debug(err)
-			code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
+			code, err = http.StatusUnauthorized, errors.New("wrong credentials")
 		} else {
 			e.log.Error(err)
 			code = http.StatusInternalServerError
@@ -134,7 +134,7 @@ func (e *environment) login(w http.ResponseWriter, r *http.Request) (code int, e
 	err = checkPasswordHash(user.Password, hashedPassword)
 	if err != nil {
 		e.log.Debug(err)
-		code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
+		code, err = http.StatusUnauthorized, errors.New("wrong credentials")
 		return
 	}
 	ctx := context.Background()

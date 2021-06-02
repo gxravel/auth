@@ -92,13 +92,13 @@ func (e *Environment) Parse(tokenString string, isRefresh bool) (claims *Claims,
 	}
 	jwtToken, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.Errorf("Unexpected signing method: %v", t.Header["alg"])
+			return nil, errors.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
 		return key, nil
 	})
 	var ok bool
 	if claims, ok = jwtToken.Claims.(*Claims); !ok || !jwtToken.Valid {
-		return nil, errors.New("Couldn't handle this token: " + err.Error())
+		return nil, errors.New("couldn't handle this token: " + err.Error())
 	}
 	return
 }

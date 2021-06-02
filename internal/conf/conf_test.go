@@ -12,7 +12,7 @@ func testIfFieldEmpty(t *testing.T, data interface{}) {
 	vType := v.Type()
 	for i := 0; i < v.NumField(); i++ {
 		if v.Field(i).IsZero() {
-			t.Errorf("The field %s is empty", vType.Field(i).Name)
+			t.Errorf("the field %s is empty", vType.Field(i).Name)
 		}
 	}
 }
