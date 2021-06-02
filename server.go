@@ -35,9 +35,9 @@ var (
 
 // environment is set of options used in handlers.
 type environment struct {
-	logger *log.Logger
-	users  user.Manager
-	token  jwt.Manager
+	log   *log.Logger
+	users user.Manager
+	token jwt.Manager
 }
 
 // responseModel is JSON model of a response.
@@ -110,7 +110,7 @@ func getDefaultEnvironment(connectionString, redisDSN string) (env *environment,
 	jwtEnv := &jwt.Environment{}
 	jwtEnv.Init(redisClient, ctx, jwtConfig)
 
-	env = &environment{logger: logger, users: user.New(myDB), token: jwtEnv}
+	env = &environment{log: logger, users: user.New(myDB), token: jwtEnv}
 	return
 }
 
@@ -143,7 +143,7 @@ func main() {
 
 	address := fmt.Sprint(":", config.Port)
 	handler := handlers.CORS(corsOptions...)(r)
-	env.logger.Fatal(http.ListenAndServe(address, handler))
+	env.log.Fatal(http.ListenAndServe(address, handler))
 }
 
 func sendError(w http.ResponseWriter, code int, message string) {
