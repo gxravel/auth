@@ -59,42 +59,42 @@ func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
 }
 
 // signup is a handler that is responsible for signing up user.
-func (env *environment) signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *environment) signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code, err = http.StatusBadRequest, errors.Wrap(err, "failed to decode the request body")
 		return
 	}
 	err = validateUserCredentials(user, true)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code = http.StatusBadRequest
 		return
 	}
 	user.HashedPassword, err = hashPassword(user.Password)
 	if err != nil {
-		env.log.Error(err)
+		e.log.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
-	user.UID, err = env.users.New(user)
+	user.UID, err = e.users.New(user)
 	if err != nil {
 		regexDuplicate := regexp.MustCompile(".*Duplicate.*(email|nickname).*")
 		duplicate := regexDuplicate.FindStringSubmatch(err.Error())
 		if len(duplicate) != 0 {
-			env.log.Info(err)
+			e.log.Info(err)
 			code, err = http.StatusConflict, errors.New(fmt.Sprintf("The %s is already in use", duplicate[1]))
 		} else {
-			env.log.Error(err)
+			e.log.Error(err)
 			code, err = http.StatusInternalServerError, errors.WithStack(err)
 		}
 		return
 	}
-	data, err := env.token.Set(w, user)
+	data, err := e.token.Set(w, user)
 	if err != nil {
-		env.log.Error(err)
+		e.log.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
@@ -104,40 +104,40 @@ func (env *environment) signup(w http.ResponseWriter, r *http.Request) (code int
 }
 
 // login is a handler that is responsible for logging in user.
-func (env *environment) login(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *environment) login(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code, err = http.StatusBadRequest, errors.Wrap(err, "failed to decode the request body")
 		return
 	}
 	err = validateUserCredentials(user, false)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code = http.StatusBadRequest
 		return
 	}
-	hashedPassword, err := env.users.GetHashedPassword(user.Email)
+	hashedPassword, err := e.users.GetHashedPassword(user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			env.log.Debug(err)
+			e.log.Debug(err)
 			code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
 		} else {
-			env.log.Error(err)
+			e.log.Error(err)
 			code = http.StatusInternalServerError
 		}
 		return
 	}
 	err = checkPasswordHash(user.Password, hashedPassword)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
 		return
 	}
-	data, err := env.token.Set(w, user)
+	data, err := e.token.Set(w, user)
 	if err != nil {
-		env.log.Error(err)
+		e.log.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
@@ -147,34 +147,34 @@ func (env *environment) login(w http.ResponseWriter, r *http.Request) (code int,
 }
 
 // refresh returns the token pair: access (body) and refresh (httpOnly cookie).
-func (env *environment) refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *environment) refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code, err = http.StatusBadRequest, errors.New("failed to find the cookie")
 		return
 	}
-	claims, err := env.token.Parse(cookie.Value, true)
+	claims, err := e.token.Parse(cookie.Value, true)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code = http.StatusUnauthorized
 		return
 	}
-	err = env.token.CheckIfExists(claims.Id)
+	err = e.token.CheckIfExists(claims.Id)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code, err = http.StatusUnauthorized, errors.New("the token has been expired")
 		return
 	}
-	env.token.Delete(claims.Id)
+	e.token.Delete(claims.Id)
 	user := &user.User{
 		UID:      claims.Subject,
 		Nickname: claims.Nickname,
 		Role:     claims.Role,
 	}
-	data, err := env.token.Set(w, user)
+	data, err := e.token.Set(w, user)
 	if err != nil {
-		env.log.Error(err)
+		e.log.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
@@ -184,22 +184,22 @@ func (env *environment) refresh(w http.ResponseWriter, r *http.Request) (code in
 }
 
 // logout is a handler that is responsible for logging out user.
-func (env *environment) logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *environment) logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code, err = http.StatusBadRequest, errors.New("failed to find the cookie")
 		return
 	}
-	claims, err := env.token.Parse(cookie.Value, true)
+	claims, err := e.token.Parse(cookie.Value, true)
 	if err != nil {
-		env.log.Debug(err)
+		e.log.Debug(err)
 		code = http.StatusUnauthorized
 		return
 	}
-	err = env.token.Delete(claims.Id)
+	err = e.token.Delete(claims.Id)
 	if err != nil {
-		env.log.Error(err)
+		e.log.Error(err)
 		err = nil
 	}
 	code = http.StatusNoContent

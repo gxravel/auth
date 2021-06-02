@@ -53,10 +53,10 @@ type Environment struct {
 }
 
 // Init initializes the JWT Environment.
-func (env *Environment) Init(client *redis.Client, ctx context.Context, config *conf.JWTConfiguration) {
-	env.client = client
-	env.ctx = ctx
-	env.config = config
+func (e *Environment) Init(client *redis.Client, ctx context.Context, config *conf.JWTConfiguration) {
+	e.client = client
+	e.ctx = ctx
+	e.config = config
 }
 
 // create creates the HS512 JWT token with claims.
@@ -85,12 +85,12 @@ func create(user *user.User, expiry time.Duration, key string) (token *Details, 
 }
 
 // Parse parses a string token with the key.
-func (env *Environment) Parse(tokenString string, isRefresh bool) (claims *Claims, err error) {
+func (e *Environment) Parse(tokenString string, isRefresh bool) (claims *Claims, err error) {
 	var key []byte
 	if isRefresh {
-		key = []byte(env.config.JWTRefresh)
+		key = []byte(e.config.JWTRefresh)
 	} else {
-		key = []byte(env.config.JWTAccess)
+		key = []byte(e.config.JWTAccess)
 	}
 	jwtToken, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -106,21 +106,21 @@ func (env *Environment) Parse(tokenString string, isRefresh bool) (claims *Claim
 }
 
 // save saves the token to the redis database.
-func (env *Environment) save(token *Details) (err error) {
+func (e *Environment) save(token *Details) (err error) {
 	expiry := time.Until(time.Unix(token.Expiry, 0))
-	err = errors.WithStack(env.client.Set(env.ctx, token.UUID, token.Subject, expiry).Err())
+	err = errors.WithStack(e.client.Set(e.ctx, token.UUID, token.Subject, expiry).Err())
 	return
 }
 
 // CheckIfExists checks if token exists in the redis database.
-func (env *Environment) CheckIfExists(tokenUUID string) (err error) {
-	err = errors.WithStack(env.client.Get(env.ctx, tokenUUID).Err())
+func (e *Environment) CheckIfExists(tokenUUID string) (err error) {
+	err = errors.WithStack(e.client.Get(e.ctx, tokenUUID).Err())
 	return
 }
 
 // Delete deletes token from the redis database.
-func (env *Environment) Delete(tokenUUID string) (err error) {
-	err = errors.WithStack(env.client.Del(env.ctx, tokenUUID).Err())
+func (e *Environment) Delete(tokenUUID string) (err error) {
+	err = errors.WithStack(e.client.Del(e.ctx, tokenUUID).Err())
 	return
 }
 
@@ -137,16 +137,16 @@ func setCookie(w http.ResponseWriter, refreshToken *Details) {
 }
 
 // Set returns the access token and sets the refresh token to the http only cookie.
-func (env *Environment) Set(w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error) {
-	accessToken, err := create(user, accessTokenExpiry, env.config.JWTAccess)
+func (e *Environment) Set(w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error) {
+	accessToken, err := create(user, accessTokenExpiry, e.config.JWTAccess)
 	if err != nil {
 		return
 	}
-	refreshToken, err := create(user, refreshTokenExpiry, env.config.JWTRefresh)
+	refreshToken, err := create(user, refreshTokenExpiry, e.config.JWTRefresh)
 	if err != nil {
 		return
 	}
-	err = env.save(refreshToken)
+	err = e.save(refreshToken)
 	if err != nil {
 		return
 	}
