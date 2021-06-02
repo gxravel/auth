@@ -18,6 +18,8 @@ import (
 	"github.com/gxravel/auth/pkg/jwt"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -132,7 +134,7 @@ func main() {
 	s := r.PathPrefix("/api/" + goconst.APIVersion).Subrouter()
 
 	s.HandleFunc("/login", makeHandler(env.Login)).Methods(http.MethodPost)
-	s.HandleFunc("/signup", makeHandler(env.Signup)).Methods(http.MethodPost, http.MethodOptions)
+	s.HandleFunc("/signup", makeHandler(env.Signup)).Methods(http.MethodPost)
 	s.HandleFunc("/refresh_token", makeHandler(env.Refresh)).Methods(http.MethodPost)
 	s.HandleFunc("/logout", makeHandler(env.Logout)).Methods(http.MethodPost)
 
