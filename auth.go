@@ -58,148 +58,148 @@ func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
 	return
 }
 
-// Signup is a handler that is responsible for signing up user.
-func (env *Environment) Signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
+// signup is a handler that is responsible for signing up user.
+func (env *environment) signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code, err = http.StatusBadRequest, errors.Wrap(err, "failed to decode the request body")
 		return
 	}
 	err = validateUserCredentials(user, true)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code = http.StatusBadRequest
 		return
 	}
 	user.HashedPassword, err = hashPassword(user.Password)
 	if err != nil {
-		env.Logger.Error(err)
+		env.logger.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
-	user.UID, err = env.Users.New(user)
+	user.UID, err = env.users.New(user)
 	if err != nil {
 		regexDuplicate := regexp.MustCompile(".*Duplicate.*(email|nickname).*")
 		duplicate := regexDuplicate.FindStringSubmatch(err.Error())
 		if len(duplicate) != 0 {
-			env.Logger.Info(err)
+			env.logger.Info(err)
 			code, err = http.StatusConflict, errors.New(fmt.Sprintf("The %s is already in use", duplicate[1]))
 		} else {
-			env.Logger.Error(err)
+			env.logger.Error(err)
 			code, err = http.StatusInternalServerError, errors.WithStack(err)
 		}
 		return
 	}
-	data, err := env.Token.Set(w, user)
+	data, err := env.token.Set(w, user)
 	if err != nil {
-		env.Logger.Error(err)
+		env.logger.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
 	code = http.StatusCreated
-	sendJSON(w, code, &ResponseModel{Data: data})
+	sendJSON(w, code, &responseModel{Data: data})
 	return
 }
 
-// Login is a handler that is responsible for logging in user.
-func (env *Environment) Login(w http.ResponseWriter, r *http.Request) (code int, err error) {
+// login is a handler that is responsible for logging in user.
+func (env *environment) login(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code, err = http.StatusBadRequest, errors.Wrap(err, "failed to decode the request body")
 		return
 	}
 	err = validateUserCredentials(user, false)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code = http.StatusBadRequest
 		return
 	}
-	hashedPassword, err := env.Users.GetHashedPassword(user.Email)
+	hashedPassword, err := env.users.GetHashedPassword(user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			env.Logger.Debug(err)
+			env.logger.Debug(err)
 			code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
 		} else {
-			env.Logger.Error(err)
+			env.logger.Error(err)
 			code = http.StatusInternalServerError
 		}
 		return
 	}
 	err = checkPasswordHash(user.Password, hashedPassword)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
 		return
 	}
-	data, err := env.Token.Set(w, user)
+	data, err := env.token.Set(w, user)
 	if err != nil {
-		env.Logger.Error(err)
+		env.logger.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
 	code = http.StatusOK
-	sendJSON(w, code, &ResponseModel{Data: data})
+	sendJSON(w, code, &responseModel{Data: data})
 	return
 }
 
-// Refresh returns the token pair: access (body) and refresh (httpOnly cookie).
-func (env *Environment) Refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
+// refresh returns the token pair: access (body) and refresh (httpOnly cookie).
+func (env *environment) refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code, err = http.StatusBadRequest, errors.New("failed to find the cookie")
 		return
 	}
-	claims, err := env.Token.Parse(cookie.Value, true)
+	claims, err := env.token.Parse(cookie.Value, true)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code = http.StatusUnauthorized
 		return
 	}
-	err = env.Token.CheckIfExists(claims.Id)
+	err = env.token.CheckIfExists(claims.Id)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code, err = http.StatusUnauthorized, errors.New("the token has been expired")
 		return
 	}
-	env.Token.Delete(claims.Id)
+	env.token.Delete(claims.Id)
 	user := &user.User{
 		UID:      claims.Subject,
 		Nickname: claims.Nickname,
 		Role:     claims.Role,
 	}
-	data, err := env.Token.Set(w, user)
+	data, err := env.token.Set(w, user)
 	if err != nil {
-		env.Logger.Error(err)
+		env.logger.Error(err)
 		code = http.StatusInternalServerError
 		return
 	}
 	code = http.StatusOK
-	sendJSON(w, code, &ResponseModel{Data: data})
+	sendJSON(w, code, &responseModel{Data: data})
 	return
 }
 
-// Logout is a handler that is responsible for logging out user.
-func (env *Environment) Logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
+// logout is a handler that is responsible for logging out user.
+func (env *environment) logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code, err = http.StatusBadRequest, errors.New("failed to find the cookie")
 		return
 	}
-	claims, err := env.Token.Parse(cookie.Value, true)
+	claims, err := env.token.Parse(cookie.Value, true)
 	if err != nil {
-		env.Logger.Debug(err)
+		env.logger.Debug(err)
 		code = http.StatusUnauthorized
 		return
 	}
-	err = env.Token.Delete(claims.Id)
+	err = env.token.Delete(claims.Id)
 	if err != nil {
-		env.Logger.Error(err)
+		env.logger.Error(err)
 		err = nil
 	}
 	code = http.StatusNoContent

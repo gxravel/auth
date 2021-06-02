@@ -33,21 +33,21 @@ var (
 	allowedHeaders = []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"}
 )
 
-// Environment is set of options used in handlers.
-type Environment struct {
-	Logger *log.Logger
-	Users  user.Manager
-	Token  jwt.Manager
+// environment is set of options used in handlers.
+type environment struct {
+	logger *log.Logger
+	users  user.Manager
+	token  jwt.Manager
 }
 
-// ResponseModel is JSON model of a response.
-type ResponseModel struct {
+// responseModel is JSON model of a response.
+type responseModel struct {
 	Data  map[string]interface{} `json:"data,omitempty"`
-	Error *ErrorModel            `json:"error,omitempty"`
+	Error *errorModel            `json:"error,omitempty"`
 }
 
-// ErrorModel is JSON model of an error response.
-type ErrorModel struct {
+// errorModel is JSON model of an error response.
+type errorModel struct {
 	Message string `json:"msg,omitempty"`
 }
 
@@ -79,7 +79,7 @@ func makeHandler(customHandler func(http.ResponseWriter, *http.Request) (int, er
 }
 
 // getDefaultEnvironment returns the default Environment.
-func getDefaultEnvironment(connectionString, redisDSN string) (env *Environment, err error) {
+func getDefaultEnvironment(connectionString, redisDSN string) (env *environment, err error) {
 	logger := log.New()
 	logger.SetFormatter(&log.JSONFormatter{})
 	logger.SetLevel(log.DebugLevel)
@@ -110,7 +110,7 @@ func getDefaultEnvironment(connectionString, redisDSN string) (env *Environment,
 	jwtEnv := &jwt.Environment{}
 	jwtEnv.Init(redisClient, ctx, jwtConfig)
 
-	env = &Environment{Logger: logger, Users: user.New(myDB), Token: jwtEnv}
+	env = &environment{logger: logger, users: user.New(myDB), token: jwtEnv}
 	return
 }
 
@@ -133,25 +133,25 @@ func main() {
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api/" + goconst.APIVersion).Subrouter()
 
-	s.HandleFunc("/login", makeHandler(env.Login)).Methods(http.MethodPost)
-	s.HandleFunc("/signup", makeHandler(env.Signup)).Methods(http.MethodPost)
-	s.HandleFunc("/refresh_token", makeHandler(env.Refresh)).Methods(http.MethodPost)
-	s.HandleFunc("/logout", makeHandler(env.Logout)).Methods(http.MethodPost)
+	s.HandleFunc("/login", makeHandler(env.login)).Methods(http.MethodPost)
+	s.HandleFunc("/signup", makeHandler(env.signup)).Methods(http.MethodPost)
+	s.HandleFunc("/refresh_token", makeHandler(env.refresh)).Methods(http.MethodPost)
+	s.HandleFunc("/logout", makeHandler(env.logout)).Methods(http.MethodPost)
 
 	allowedOrigins := strings.Split(config.AllowedOrigins, ", ")
 	corsOptions := getCORSOptions(allowedHeaders, allowedOrigins, allowedMethods)
 
 	address := fmt.Sprint(":", config.Port)
 	handler := handlers.CORS(corsOptions...)(r)
-	env.Logger.Fatal(http.ListenAndServe(address, handler))
+	env.logger.Fatal(http.ListenAndServe(address, handler))
 }
 
 func sendError(w http.ResponseWriter, code int, message string) {
-	response := &ResponseModel{Error: &ErrorModel{Message: message}}
+	response := &responseModel{Error: &errorModel{Message: message}}
 	sendJSON(w, code, response)
 }
 
-func sendJSON(w http.ResponseWriter, code int, response *ResponseModel) {
+func sendJSON(w http.ResponseWriter, code int, response *responseModel) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	err := json.NewEncoder(w).Encode(response)
