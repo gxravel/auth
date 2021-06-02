@@ -28,18 +28,17 @@ type Wrapper struct {
 
 // New returns a new Wrapper.
 func New(db *sql.DB) *Wrapper {
-	var w *Wrapper
+	w := &Wrapper{}
 	w.init(db)
 	return w
 }
 
 func (w *Wrapper) init(db *sql.DB) {
-	w = &Wrapper{}
 	w.db = db
 }
 
 // All returns all users. TODO
-func (w *Wrapper) All() (users []User, err error)
+func (w *Wrapper) All() (users []User, err error) { return }
 
 // New creates new user and returns it's id.
 func (w *Wrapper) New(user *User) (uid string, err error) {
