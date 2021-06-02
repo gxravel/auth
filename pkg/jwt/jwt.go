@@ -7,12 +7,11 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis/v8"
+	"github.com/gxravel/auth/internal/conf"
+	"github.com/gxravel/auth/internal/db/user"
+	"github.com/gxravel/auth/pkg/goconst"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
-
-	"github.com/gxravel/auth/conf"
-	"github.com/gxravel/auth/db"
-	"github.com/gxravel/auth/utils"
 )
 
 const (
@@ -43,7 +42,7 @@ type Manager interface {
 	Parse(tokenString string, isRefresh bool) (claims *Claims, err error)
 	CheckIfExists(tokenUUID string) (err error)
 	Delete(tokenUUID string) (err error)
-	Set(w http.ResponseWriter, user *db.User) (data map[string]interface{}, err error)
+	Set(w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error)
 }
 
 // Environment contains the fields which interact with the token
@@ -61,7 +60,7 @@ func (env *Environment) Init(client *redis.Client, ctx context.Context, config *
 }
 
 // create creates the HS512 JWT token with claims
-func create(user *db.User, expiry time.Duration, key string) (token *Details, err error) {
+func create(user *user.User, expiry time.Duration, key string) (token *Details, err error) {
 	now := time.Now()
 	token = &Details{}
 	token.Expiry = now.Add(expiry).Unix()
@@ -129,7 +128,7 @@ func setCookie(w http.ResponseWriter, refreshToken *Details) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refresh_token",
 		Value:    refreshToken.String,
-		Path:     "/api/" + utils.LastVersion + "/",
+		Path:     "/api/" + goconst.APIVersion + "/",
 		Expires:  time.Unix(refreshToken.Expiry, 0),
 		SameSite: http.SameSiteStrictMode,
 		// Secure:   true,
@@ -138,7 +137,7 @@ func setCookie(w http.ResponseWriter, refreshToken *Details) {
 }
 
 // Set returns the access token and sets the refresh token to the http only cookie
-func (env *Environment) Set(w http.ResponseWriter, user *db.User) (data map[string]interface{}, err error) {
+func (env *Environment) Set(w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error) {
 	accessToken, err := create(user, accessTokenExpiry, env.config.JWTAccess)
 	if err != nil {
 		return

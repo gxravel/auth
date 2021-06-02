@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"database/sql"
@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gxravel/auth/db"
+	"github.com/gxravel/auth/internal/db/user"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,7 +29,7 @@ func checkPasswordHash(password string, hashedPassword []byte) (err error) {
 	return errors.WithStack(bcrypt.CompareHashAndPassword(hashedPassword, []byte(password)))
 }
 
-func validateUserCredentials(user *db.User, fullCheck bool) (err error) {
+func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
 	var reg *regexp.Regexp
 	if fullCheck {
 		reg = regexp.MustCompile(`^(?i)[0-9a-z]{3,16}$`)
@@ -60,7 +60,7 @@ func validateUserCredentials(user *db.User, fullCheck bool) (err error) {
 
 // Signup is a handler that is responsible for signing up user
 func (env *Environment) Signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
-	var user *db.User
+	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		env.Logger.Debug(err)
@@ -105,7 +105,7 @@ func (env *Environment) Signup(w http.ResponseWriter, r *http.Request) (code int
 
 // Login is a handler that is responsible for logging in user
 func (env *Environment) Login(w http.ResponseWriter, r *http.Request) (code int, err error) {
-	var user *db.User
+	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		env.Logger.Debug(err)
@@ -167,7 +167,7 @@ func (env *Environment) Refresh(w http.ResponseWriter, r *http.Request) (code in
 		return
 	}
 	env.Token.Delete(claims.Id)
-	user := &db.User{
+	user := &user.User{
 		UID:      claims.Subject,
 		Nickname: claims.Nickname,
 		Role:     claims.Role,

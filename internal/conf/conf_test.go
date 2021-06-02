@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/gxravel/auth/conf"
+	. "github.com/gxravel/auth/internal/conf"
 )
 
 func testIfFieldEmpty(t *testing.T, data interface{}) {
