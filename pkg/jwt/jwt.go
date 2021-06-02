@@ -36,26 +36,24 @@ type Details struct {
 
 // Manager includes the methods allowed to deal with the token.
 type Manager interface {
-	save(token *Details) (err error)
+	save(ctx context.Context, token *Details) (err error)
 
-	Init(client *redis.Client, ctx context.Context, config *conf.JWTConfiguration)
+	Init(client *redis.Client, config *conf.JWTConfiguration)
 	Parse(tokenString string, isRefresh bool) (claims *Claims, err error)
-	CheckIfExists(tokenUUID string) (err error)
-	Delete(tokenUUID string) (err error)
-	Set(w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error)
+	CheckIfExists(ctx context.Context, tokenUUID string) (err error)
+	Delete(ctx context.Context, tokenUUID string) (err error)
+	Set(ctx context.Context, w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error)
 }
 
 // Environment contains the fields which interact with the token.
 type Environment struct {
 	client *redis.Client
-	ctx    context.Context
 	config *conf.JWTConfiguration
 }
 
 // Init initializes the JWT Environment.
-func (e *Environment) Init(client *redis.Client, ctx context.Context, config *conf.JWTConfiguration) {
+func (e *Environment) Init(client *redis.Client, config *conf.JWTConfiguration) {
 	e.client = client
-	e.ctx = ctx
 	e.config = config
 }
 
@@ -106,21 +104,21 @@ func (e *Environment) Parse(tokenString string, isRefresh bool) (claims *Claims,
 }
 
 // save saves the token to the redis database.
-func (e *Environment) save(token *Details) (err error) {
+func (e *Environment) save(ctx context.Context, token *Details) (err error) {
 	expiry := time.Until(time.Unix(token.Expiry, 0))
-	err = errors.WithStack(e.client.Set(e.ctx, token.UUID, token.Subject, expiry).Err())
+	err = errors.WithStack(e.client.Set(ctx, token.UUID, token.Subject, expiry).Err())
 	return
 }
 
 // CheckIfExists checks if token exists in the redis database.
-func (e *Environment) CheckIfExists(tokenUUID string) (err error) {
-	err = errors.WithStack(e.client.Get(e.ctx, tokenUUID).Err())
+func (e *Environment) CheckIfExists(ctx context.Context, tokenUUID string) (err error) {
+	err = errors.WithStack(e.client.Get(ctx, tokenUUID).Err())
 	return
 }
 
 // Delete deletes token from the redis database.
-func (e *Environment) Delete(tokenUUID string) (err error) {
-	err = errors.WithStack(e.client.Del(e.ctx, tokenUUID).Err())
+func (e *Environment) Delete(ctx context.Context, tokenUUID string) (err error) {
+	err = errors.WithStack(e.client.Del(ctx, tokenUUID).Err())
 	return
 }
 
@@ -137,7 +135,7 @@ func setCookie(w http.ResponseWriter, refreshToken *Details) {
 }
 
 // Set returns the access token and sets the refresh token to the http only cookie.
-func (e *Environment) Set(w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error) {
+func (e *Environment) Set(ctx context.Context, w http.ResponseWriter, user *user.User) (data map[string]interface{}, err error) {
 	accessToken, err := create(user, accessTokenExpiry, e.config.JWTAccess)
 	if err != nil {
 		return
@@ -146,7 +144,7 @@ func (e *Environment) Set(w http.ResponseWriter, user *user.User) (data map[stri
 	if err != nil {
 		return
 	}
-	err = e.save(refreshToken)
+	err = e.save(ctx, refreshToken)
 	if err != nil {
 		return
 	}

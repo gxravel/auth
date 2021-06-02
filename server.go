@@ -108,7 +108,7 @@ func getDefaultEnvironment(connectionString, redisDSN string) (env *environment,
 	jwtConfig := conf.GetJWT()
 
 	jwtEnv := &jwt.Environment{}
-	jwtEnv.Init(redisClient, ctx, jwtConfig)
+	jwtEnv.Init(redisClient, jwtConfig)
 
 	env = &environment{log: logger, users: user.New(myDB), token: jwtEnv}
 	return

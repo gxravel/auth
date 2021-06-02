@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -92,7 +93,8 @@ func (e *environment) signup(w http.ResponseWriter, r *http.Request) (code int, 
 		}
 		return
 	}
-	data, err := e.token.Set(w, user)
+	ctx := context.Background()
+	data, err := e.token.Set(ctx, w, user)
 	if err != nil {
 		e.log.Error(err)
 		code = http.StatusInternalServerError
@@ -135,7 +137,8 @@ func (e *environment) login(w http.ResponseWriter, r *http.Request) (code int, e
 		code, err = http.StatusUnauthorized, errors.New("Wrong credentials")
 		return
 	}
-	data, err := e.token.Set(w, user)
+	ctx := context.Background()
+	data, err := e.token.Set(ctx, w, user)
 	if err != nil {
 		e.log.Error(err)
 		code = http.StatusInternalServerError
@@ -160,19 +163,20 @@ func (e *environment) refresh(w http.ResponseWriter, r *http.Request) (code int,
 		code = http.StatusUnauthorized
 		return
 	}
-	err = e.token.CheckIfExists(claims.Id)
+	ctx := context.Background()
+	err = e.token.CheckIfExists(ctx, claims.Id)
 	if err != nil {
 		e.log.Debug(err)
 		code, err = http.StatusUnauthorized, errors.New("the token has been expired")
 		return
 	}
-	e.token.Delete(claims.Id)
+	e.token.Delete(ctx, claims.Id)
 	user := &user.User{
 		UID:      claims.Subject,
 		Nickname: claims.Nickname,
 		Role:     claims.Role,
 	}
-	data, err := e.token.Set(w, user)
+	data, err := e.token.Set(ctx, w, user)
 	if err != nil {
 		e.log.Error(err)
 		code = http.StatusInternalServerError
@@ -197,7 +201,8 @@ func (e *environment) logout(w http.ResponseWriter, r *http.Request) (code int, 
 		code = http.StatusUnauthorized
 		return
 	}
-	err = e.token.Delete(claims.Id)
+	ctx := context.Background()
+	err = e.token.Delete(ctx, claims.Id)
 	if err != nil {
 		e.log.Error(err)
 		err = nil
