@@ -33,20 +33,20 @@ var (
 	allowedHeaders = []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"}
 )
 
-// Environment is set of options used in handlers
+// Environment is set of options used in handlers.
 type Environment struct {
 	Logger *log.Logger
 	Users  user.Manager
 	Token  jwt.Manager
 }
 
-// ResponseModel is JSON model of a response
+// ResponseModel is JSON model of a response.
 type ResponseModel struct {
 	Data  map[string]interface{} `json:"data,omitempty"`
 	Error *ErrorModel            `json:"error,omitempty"`
 }
 
-// ErrorModel is JSON model of an error response
+// ErrorModel is JSON model of an error response.
 type ErrorModel struct {
 	Message string `json:"msg,omitempty"`
 }
@@ -55,7 +55,7 @@ type stackTracer interface {
 	StackTrace() errors.StackTrace
 }
 
-// makeHandler creates http.HandlerFunc out of the customHandler that manages the request
+// makeHandler creates http.HandlerFunc out of the customHandler that manages the request.
 func makeHandler(customHandler func(http.ResponseWriter, *http.Request) (int, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "OPTIONS" {
@@ -78,7 +78,7 @@ func makeHandler(customHandler func(http.ResponseWriter, *http.Request) (int, er
 	}
 }
 
-// getDefaultEnvironment returns the default Environment
+// getDefaultEnvironment returns the default Environment.
 func getDefaultEnvironment(connectionString, redisDSN string) (env *Environment, err error) {
 	logger := log.New()
 	logger.SetFormatter(&log.JSONFormatter{})

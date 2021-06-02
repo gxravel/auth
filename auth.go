@@ -58,7 +58,7 @@ func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
 	return
 }
 
-// Signup is a handler that is responsible for signing up user
+// Signup is a handler that is responsible for signing up user.
 func (env *Environment) Signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
@@ -103,7 +103,7 @@ func (env *Environment) Signup(w http.ResponseWriter, r *http.Request) (code int
 	return
 }
 
-// Login is a handler that is responsible for logging in user
+// Login is a handler that is responsible for logging in user.
 func (env *Environment) Login(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
@@ -146,7 +146,7 @@ func (env *Environment) Login(w http.ResponseWriter, r *http.Request) (code int,
 	return
 }
 
-// Refresh returns the token pair: access (body) and refresh (httpOnly cookie)
+// Refresh returns the token pair: access (body) and refresh (httpOnly cookie).
 func (env *Environment) Refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
@@ -183,7 +183,7 @@ func (env *Environment) Refresh(w http.ResponseWriter, r *http.Request) (code in
 	return
 }
 
-// Logout is a handler that is responsible for logging out user
+// Logout is a handler that is responsible for logging out user.
 func (env *Environment) Logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {

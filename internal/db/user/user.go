@@ -64,7 +64,7 @@ func (w *Wrapper) New(user *User) (uid string, err error) {
 	return
 }
 
-// GetHashedPassword returns hashed password of the user with specified uuid
+// GetHashedPassword returns hashed password of the user with specified uuid.
 func (w *Wrapper) GetHashedPassword(uid string) (hashedPassword []byte, err error) {
 	err = w.db.QueryRow(`select hashed_password from user where email=?`, uid).Scan(&hashedPassword)
 	return

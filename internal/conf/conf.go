@@ -10,7 +10,7 @@ import (
 	"github.com/tkanos/gonfig"
 )
 
-// Configuration contains the environment variables
+// Configuration contains the environment variables.
 type Configuration struct {
 	Domain           string `json:"DOMAIN"`
 	Port             int    `json:"PORT"`
