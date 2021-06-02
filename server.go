@@ -34,7 +34,7 @@ var (
 // Environment is set of options used in handlers
 type Environment struct {
 	Logger *log.Logger
-	Users  user.Users
+	Users  user.Manager
 	Token  jwt.Manager
 }
 
@@ -108,7 +108,7 @@ func getDefaultEnvironment(connectionString, redisDSN string) (env *Environment,
 	jwtEnv := &jwt.Environment{}
 	jwtEnv.Init(redisClient, ctx, jwtConfig)
 
-	env = &Environment{Logger: logger, Users: user.UserModel{DB: myDB}, Token: jwtEnv}
+	env = &Environment{Logger: logger, Users: user.New(myDB), Token: jwtEnv}
 	return
 }
 

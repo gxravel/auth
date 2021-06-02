@@ -13,24 +13,37 @@ type User struct {
 	Role           int8 `json:"role,omitempty"`
 }
 
-// Users describes methods associated with users.
-type Users interface {
+// Manager describes methods associated with users.
+type Manager interface {
+	init(*sql.DB)
 	All() (users []User, err error)
 	New(user *User) (uid string, err error)
 	GetHashedPassword(uid string) (hashedPassword []byte, err error)
 }
 
-// UserModel wraps the sql.DB connection pool over users.
-type UserModel struct {
-	DB *sql.DB
+// Wrapper wraps the sql.DB connection pool over users.
+type Wrapper struct {
+	db *sql.DB
+}
+
+// New returns a new Wrapper.
+func New(db *sql.DB) *Wrapper {
+	var w *Wrapper
+	w.init(db)
+	return w
+}
+
+func (w *Wrapper) init(db *sql.DB) {
+	w = &Wrapper{}
+	w.db = db
 }
 
 // All returns all users. TODO
-func (m UserModel) All() (users []User, err error) { return }
+func (w *Wrapper) All() (users []User, err error)
 
 // New creates new user and returns it's id.
-func (m UserModel) New(user *User) (uid string, err error) {
-	tx, err := m.DB.Begin()
+func (w *Wrapper) New(user *User) (uid string, err error) {
+	tx, err := w.db.Begin()
 	if err != nil {
 		return
 	}
@@ -53,7 +66,7 @@ func (m UserModel) New(user *User) (uid string, err error) {
 }
 
 // GetHashedPassword returns hashed password of the user with specified uuid
-func (m UserModel) GetHashedPassword(uid string) (hashedPassword []byte, err error) {
-	err = m.DB.QueryRow(`select hashed_password from user where email=?`, uid).Scan(&hashedPassword)
+func (w *Wrapper) GetHashedPassword(uid string) (hashedPassword []byte, err error) {
+	err = w.db.QueryRow(`select hashed_password from user where email=?`, uid).Scan(&hashedPassword)
 	return
 }
