@@ -18,6 +18,14 @@ const (
 	bcryptCost = bcrypt.DefaultCost
 )
 
+var (
+	regDuplicate = regexp.MustCompile(".*Duplicate.*(email|nickname).*")
+	regNickname  = regexp.MustCompile(`^(?i)[0-9a-z]{3,16}$`)
+	regName      = regexp.MustCompile(`^(?i)[a-zа-яё \'\-\.\,]*$`)
+	regPass      = regexp.MustCompile(`^.{4,255}$`)
+	regEmail     = regexp.MustCompile(`^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$`)
+)
+
 func hashPassword(password string) (hashedPassword []byte, err error) {
 	hashedPassword, err = bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
 	if err != nil {
@@ -31,26 +39,21 @@ func checkPasswordHash(password string, hashedPassword []byte) (err error) {
 }
 
 func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
-	var reg *regexp.Regexp
 	if fullCheck {
-		reg = regexp.MustCompile(`^(?i)[0-9a-z]{3,16}$`)
-		if !reg.MatchString(user.Nickname) {
+		if !regNickname.MatchString(user.Nickname) {
 			err = errors.New("invalid nickname: min length - 3, max length - 16, only latin and digits")
 			return
 		}
-		reg = regexp.MustCompile(`^(?i)[a-zа-яё \'\-\.\,]*$`)
-		if !reg.MatchString(user.Name) {
+		if !regName.MatchString(user.Name) {
 			err = errors.New("invalid name")
 			return
 		}
 	}
-	reg = regexp.MustCompile(`^.{4,255}$`)
-	if !reg.MatchString(user.Password) {
+	if !regPass.MatchString(user.Password) {
 		err = errors.New("invalid password: min length - 4")
 		return
 	}
-	reg = regexp.MustCompile(`^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$`)
-	if !reg.MatchString(user.Email) {
+	if !regEmail.MatchString(user.Email) {
 		err = errors.New("invalid email")
 		return
 	}
@@ -82,8 +85,7 @@ func (e *environment) signup(w http.ResponseWriter, r *http.Request) (code int, 
 	}
 	user.UID, err = e.users.New(user)
 	if err != nil {
-		regexDuplicate := regexp.MustCompile(".*Duplicate.*(email|nickname).*")
-		duplicate := regexDuplicate.FindStringSubmatch(err.Error())
+		duplicate := regDuplicate.FindStringSubmatch(err.Error())
 		if len(duplicate) != 0 {
 			e.log.Info(err)
 			code, err = http.StatusConflict, errors.New(fmt.Sprintf("the %s is already in use", duplicate[1]))
