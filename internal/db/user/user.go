@@ -15,7 +15,6 @@ type User struct {
 
 // Manager describes methods associated with users.
 type Manager interface {
-	init(*sql.DB)
 	All() (users []User, err error)
 	New(user *User) (uid string, err error)
 	GetHashedPassword(uid string) (hashedPassword []byte, err error)
