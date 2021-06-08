@@ -36,8 +36,6 @@ type Details struct {
 
 // Manager includes the methods allowed to deal with the token.
 type Manager interface {
-	save(ctx context.Context, token *Details) (err error)
-
 	Init(client *redis.Client, config *conf.JWTConfiguration)
 	Parse(tokenString string, isRefresh bool) (claims *Claims, err error)
 	CheckIfExists(ctx context.Context, tokenUUID string) (err error)
@@ -96,9 +94,12 @@ func (e *Environment) Parse(tokenString string, isRefresh bool) (claims *Claims,
 		}
 		return key, nil
 	})
+	if err != nil {
+		return nil, err
+	}
 	var ok bool
 	if claims, ok = jwtToken.Claims.(*Claims); !ok || !jwtToken.Valid {
-		return nil, errors.New("couldn't handle this token: " + err.Error())
+		return nil, err
 	}
 	return
 }

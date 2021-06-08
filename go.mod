@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
+	github.com/alicebob/miniredis/v2 v2.14.5 // indirect
 	github.com/auth0/go-jwt-middleware v1.0.0
 	github.com/codegangsta/negroni v1.0.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
@@ -23,6 +24,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.8.1
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/term v0.0.0-20210317153231-de623e64d2a6 // indirect
