@@ -2,11 +2,15 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/handlers"
@@ -78,8 +82,8 @@ func makeHandler(customHandler func(http.ResponseWriter, *http.Request) (int, er
 	}
 }
 
-// getDefaultEnvironment returns the default Environment.
-func getDefaultEnvironment(connectionString, redisDSN string) (env *environment, err error) {
+// defaultEnvironment returns the default Environment.
+func defaultEnvironment(connectionString, redisDSN string) (env *environment, myDB *sql.DB, redisClient *redis.Client, err error) {
 	logger := log.New()
 	logger.SetFormatter(&log.JSONFormatter{})
 	logger.SetLevel(log.DebugLevel)
@@ -91,12 +95,12 @@ func getDefaultEnvironment(connectionString, redisDSN string) (env *environment,
 	// logger.SetReportCaller(true)
 
 	connectionString = connectionString + "/" + dbName
-	myDB, err := db.Init(driver, connectionString)
+	myDB, err = db.Init(driver, connectionString)
 	if err != nil {
 		return
 	}
 
-	redisClient := redis.NewClient(&redis.Options{
+	redisClient = redis.NewClient(&redis.Options{
 		Addr: redisDSN,
 	})
 	ctx := context.Background()
@@ -125,7 +129,7 @@ func getCORSOptions(headers, origins, methods []string) (options []handlers.CORS
 
 func main() {
 	config := conf.Get()
-	env, err := getDefaultEnvironment(config.ConnectionString, config.RedisDSN)
+	env, db, redis, err := defaultEnvironment(config.ConnectionString, config.RedisDSN)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -143,7 +147,38 @@ func main() {
 
 	address := fmt.Sprint(":", config.Port)
 	handler := handlers.CORS(corsOptions...)(r)
-	env.log.Fatal(http.ListenAndServe(address, handler))
+
+	srv := &http.Server{
+		Addr:    address,
+		Handler: handler,
+	}
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			env.log.Fatalf("HTTP server shutdown: %v", err)
+		}
+	}()
+
+	env.log.Print("server started")
+
+	<-done
+
+	env.log.Print("server stopped")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer func() {
+		db.Close()
+		redis.Close()
+		cancel()
+	}()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		env.log.Fatalf("server shutdown failed: %+v", err)
+	}
+	env.log.Print("server exited properly")
 }
 
 func sendError(w http.ResponseWriter, code int, message string) {
