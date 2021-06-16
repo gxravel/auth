@@ -17,13 +17,13 @@ func testIfFieldEmpty(t *testing.T, data interface{}) {
 	}
 }
 
-func TestGet(t *testing.T) {
-	config := Get()
+func TestNew(t *testing.T) {
+	config := New()
 	testIfFieldEmpty(t, config)
 }
 
-func TestGetJWT(t *testing.T) {
-	config := GetJWT()
+func TestNewJWT(t *testing.T) {
+	config := NewJWT()
 	testIfFieldEmpty(t, config)
 }
 

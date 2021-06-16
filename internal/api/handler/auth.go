@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gxravel/auth/internal/db/user"
+	"github.com/gxravel/auth/internal/model/user"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -63,9 +63,10 @@ func validateUserCredentials(user *user.User, fullCheck bool) (err error) {
 }
 
 // signup is a handler that is responsible for signing up user.
-func (e *environment) signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *Environment) signup(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
+	r.Body.Close()
 	if err != nil {
 		e.log.Debug(err)
 		code, err = http.StatusBadRequest, errors.Wrap(err, "failed to decode the request body")
@@ -108,9 +109,10 @@ func (e *environment) signup(w http.ResponseWriter, r *http.Request) (code int, 
 }
 
 // login is a handler that is responsible for logging in user.
-func (e *environment) login(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *Environment) login(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	var user *user.User
 	err = json.NewDecoder(r.Body).Decode(&user)
+	r.Body.Close()
 	if err != nil {
 		e.log.Debug(err)
 		code, err = http.StatusBadRequest, errors.Wrap(err, "failed to decode the request body")
@@ -152,7 +154,7 @@ func (e *environment) login(w http.ResponseWriter, r *http.Request) (code int, e
 }
 
 // refresh returns the token pair: access (body) and refresh (httpOnly cookie).
-func (e *environment) refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *Environment) refresh(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
 		e.log.Debug(err)
@@ -190,7 +192,7 @@ func (e *environment) refresh(w http.ResponseWriter, r *http.Request) (code int,
 }
 
 // logout is a handler that is responsible for logging out user.
-func (e *environment) logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
+func (e *Environment) logout(w http.ResponseWriter, r *http.Request) (code int, err error) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
 		e.log.Debug(err)

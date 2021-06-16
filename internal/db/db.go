@@ -2,7 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"log"
 	"time"
+
+	"github.com/gxravel/auth/internal/conf"
 )
 
 const (
@@ -11,11 +14,11 @@ const (
 	maxIdleConns    = maxOpenConns
 )
 
-// Init opens a database and configures it with default settings.
-func Init(driver string, connectionString string) (db *sql.DB, err error) {
-	db, err = sql.Open(driver, connectionString)
+// New opens a database and configures it with default settings.
+func New(conf *conf.Configuration) *sql.DB {
+	db, err := sql.Open(conf.SQLDriver, conf.ConnectionString+"/"+conf.DBName)
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 
 	db.SetConnMaxLifetime(connMaxLifeTime)
@@ -23,5 +26,8 @@ func Init(driver string, connectionString string) (db *sql.DB, err error) {
 	db.SetMaxIdleConns(maxIdleConns)
 
 	err = db.Ping()
-	return
+	if err != nil {
+		log.Fatal(err)
+	}
+	return db
 }

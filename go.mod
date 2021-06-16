@@ -24,6 +24,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
+	go.uber.org/fx v1.13.1 // indirect
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/term v0.0.0-20210317153231-de623e64d2a6 // indirect
 	golang.org/x/text v0.3.5 // indirect

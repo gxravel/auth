@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis/v8"
 	"github.com/gxravel/auth/internal/conf"
-	"github.com/gxravel/auth/internal/db/user"
+	"github.com/gxravel/auth/internal/model/user"
 	"github.com/gxravel/auth/pkg/goconst"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
@@ -38,7 +38,6 @@ type Details struct {
 type Manager interface {
 	save(ctx context.Context, token *Details) (err error)
 
-	Init(client *redis.Client, config *conf.JWTConfiguration)
 	Parse(tokenString string, isRefresh bool) (claims *Claims, err error)
 	CheckIfExists(ctx context.Context, tokenUUID string) (err error)
 	Delete(ctx context.Context, tokenUUID string) (err error)
@@ -51,10 +50,8 @@ type Environment struct {
 	config *conf.JWTConfiguration
 }
 
-// Init initializes the JWT Environment.
-func (e *Environment) Init(client *redis.Client, config *conf.JWTConfiguration) {
-	e.client = client
-	e.config = config
+func New(client *redis.Client, config *conf.JWTConfiguration) *Environment {
+	return &Environment{client: client, config: config}
 }
 
 // create creates the HS512 JWT token with claims.

@@ -15,6 +15,8 @@ type Configuration struct {
 	Domain           string `json:"DOMAIN"`
 	Port             int    `json:"PORT"`
 	ConnectionString string `env:"DEV_MYSQL"`
+	DBName           string `json:"DB_NAME"`
+	SQLDriver        string `json:"SQL_DRIVER"`
 	RedisDSN         string `json:"REDIS_DSN"`
 	AllowedOrigins   string `json:"ALLOWED_ORIGINS"`
 }
@@ -35,8 +37,8 @@ func getPath() (filePath string) {
 	return
 }
 
-// Get returns the config.
-func Get() (config *Configuration) {
+// New returns the config.
+func New() (config *Configuration) {
 	config = &Configuration{}
 	err := gonfig.GetConf(getPath(), config)
 	if err != nil {
@@ -45,8 +47,8 @@ func Get() (config *Configuration) {
 	return
 }
 
-// GetJWT returns the JWT config.
-func GetJWT() (config *JWTConfiguration) {
+// NewJWT returns the JWT config.
+func NewJWT() (config *JWTConfiguration) {
 	config = &JWTConfiguration{}
 	err := gonfig.GetConf(getPath(), config)
 	if err != nil {
